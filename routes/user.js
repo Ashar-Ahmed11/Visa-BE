@@ -38,48 +38,43 @@ router.post("/create", async (req, res) => {
     const {
       firstName,
       lastName,
-      jobTitle,
       email,
+      job,
+      country,
       phoneNumber,
-      cnic,
       address,
-      loanStatus,
-      loanAmount,
-      paymentScreenshot,
+      passportFrontImage,
+      passportBackImage,
       frontCnic,
       backCnic,
-      utilityBill,
+      passportSizePhotoImage,
     } = req.body;
 
-    // Check if all fields are provided
     if (
-      !firstName || !lastName || !email || !phoneNumber ||
-      !cnic || !address || !loanStatus || !paymentScreenshot || !loanAmount || !frontCnic
-      || !backCnic|| !utilityBill || !jobTitle
+      !firstName || !lastName || !email || !job || !country || !phoneNumber || !address ||
+      !passportFrontImage || !passportBackImage || !frontCnic || !backCnic || !passportSizePhotoImage
     ) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Optional: check if user with same email or CNIC exists
-    const existingUser = await User.findOne({ $or: [{ email }, { cnic }] });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ error: "User with email or CNIC already exists" });
+      return res.status(409).json({ error: "User with this email already exists" });
     }
 
     const user = new User({
       firstName,
       lastName,
-      jobTitle,
       email,
+      job,
+      country,
       phoneNumber,
-      cnic,
       address,
-      loanStatus,
-      loanAmount,
-      paymentScreenshot,
-         frontCnic,
+      passportFrontImage,
+      passportBackImage,
+      frontCnic,
       backCnic,
-      utilityBill
+      passportSizePhotoImage,
     });
 
     await user.save();

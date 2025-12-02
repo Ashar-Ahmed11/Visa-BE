@@ -9,11 +9,15 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  jobTitle: {
+  email: {
     type: String,
     required: true
   },
-  email: {
+  job:{
+    type: String,
+    required: true
+  },
+  country:{
     type: String,
     required: true
   },
@@ -21,23 +25,15 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  cnic: {
-    type: String,
-    required: true
-  },
   address: {
     type: String,
     required: true
   },
-  loanStatus: {
-    type: String,
-      default: "Pending",
-  },
-  loanAmount: {
-    type: String,
+  passportFrontImage: {
+    type: String, // Store image URL or base64 string
     required: true
   },
-  paymentScreenshot: {
+  passportBackImage: {
     type: String, // Store image URL or base64 string
     required: true
   },
@@ -49,10 +45,10 @@ const UserSchema = new mongoose.Schema({
     type: String, // Store image URL or base64 string
     required: true
   },
-  utilityBill: {
+  passportSizePhotoImage: {
     type: String, // Store image URL or base64 string
     required: true
-  },
+  }
 });
 
 const User = mongoose.model('User', UserSchema);

@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 8000
 var cors = require('cors')
 
 const connectToMongoose = require('./db'); // if this connects to MongoDB

@@ -17,6 +17,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  cnicNumber:{
+    type: String,
+    required: true
+  },
+  status:{
+    type: String,
+    default: "Pending"
+  },
   country:{
     type: String,
     required: true

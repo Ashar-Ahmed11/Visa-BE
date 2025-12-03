@@ -43,6 +43,8 @@ router.post("/create", async (req, res) => {
       country,
       phoneNumber,
       address,
+      cnicNumber,
+      status,
       passportFrontImage,
       passportBackImage,
       frontCnic,
@@ -51,7 +53,7 @@ router.post("/create", async (req, res) => {
     } = req.body;
 
     if (
-      !firstName || !lastName || !email || !job || !country || !phoneNumber || !address ||
+      !firstName || !lastName || !email || !job || !country || !phoneNumber || !address || !cnicNumber ||
       !passportFrontImage || !passportBackImage || !frontCnic || !backCnic || !passportSizePhotoImage
     ) {
       return res.status(400).json({ error: "All fields are required" });
@@ -70,6 +72,8 @@ router.post("/create", async (req, res) => {
       country,
       phoneNumber,
       address,
+      cnicNumber,
+      status: status || undefined,
       passportFrontImage,
       passportBackImage,
       frontCnic,
@@ -88,18 +92,20 @@ router.post("/create", async (req, res) => {
 
 
 
+// Backward-compatible: update loan status route now updates 'status'
 router.put("/update-loan-status/:id", verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const { loanStatus } = req.body;
+    const { loanStatus, status } = req.body;
     
-    if (!id || !loanStatus) {
-      return res.status(400).json({ error: "User ID and loanStatus are required" });
+    const newStatus = status || loanStatus;
+    if (!id || !newStatus) {
+      return res.status(400).json({ error: "User ID and status are required" });
     }
 
    const user = await User.findByIdAndUpdate(
       id,
-      { loanStatus },
+      { status: newStatus },
       { new: true } // return updated user
     );
 
@@ -107,9 +113,28 @@ router.put("/update-loan-status/:id", verifyAdmin, async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    res.json({ message: "Loan status updated successfully", user });
+    res.json({ message: "Status updated successfully", user });
   } catch (error) {
-    console.error("Error updating loan status:", error);
+    console.error("Error updating status:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Preferred route name
+router.put("/update-status/:id", verifyAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    if (!id || !status) {
+      return res.status(400).json({ error: "User ID and status are required" });
+    }
+    const user = await User.findByIdAndUpdate(id, { status }, { new: true });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({ message: "Status updated successfully", user });
+  } catch (error) {
+    console.error("Error updating status:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -130,7 +155,7 @@ router.get("/by-cnic/:cnic", async (req, res) => {
   try {
     const cnic = req.params.cnic;
 
-    const user = await User.findOne({ cnic });
+    const user = await User.findOne({ cnicNumber: cnic });
 
     if (!user) {
       return res.status(404).json({ error: "User not found with this CNIC" });
@@ -149,7 +174,7 @@ router.get("/user-by-cnic/:cnic", async (req, res) => {
   
   const cnic = req.params.cnic;
   try {
-    const user = await User.findOne({ cnic });
+    const user = await User.findOne({ cnicNumber: cnic });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }

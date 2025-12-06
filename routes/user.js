@@ -11,24 +11,24 @@ const verifyAdmin = require("../middleware/verifyAdmin")
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "akhuwat.foundation.live@gmail.com",
-      pass: "vzakwfatdwitoioj", 
+      user: "travelbyservice@gmail.com",
+      pass: "dzyyijaemkjezbbn", 
     },
   });
 
-  try {
-    await transporter.sendMail({
-      from: "akhuwat.foundation.live@gmail.com",
-      to,
-      subject,
-      html: text,
-    });
+ try {
+  await transporter.sendMail({
+    from: "travelbyservice@gmail.com",
+    to,
+    subject,
+    html: text,
+  });
 
-    res.status(200).send("Email sent successfully");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Failed to send email");
-  }
+  return res.status(200).json({ message: "Email sent successfully" });
+} catch (error) {
+  console.error(error);
+  return res.status(500).json({ error: "Failed to send email" });
+}
 });
 
 
